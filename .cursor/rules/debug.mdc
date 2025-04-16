@@ -1,10 +1,5 @@
 ---
-description: Always include while DEBUGGING
-globs: 
-alwaysApply: false
----
----
-description: Include these rules while DEBUGGING.
+description: 
 globs: 
 alwaysApply: true
 ---

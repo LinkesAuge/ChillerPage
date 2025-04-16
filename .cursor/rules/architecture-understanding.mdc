@@ -1,13 +1,10 @@
 ---
-description: rules to parse solution architecture from docs/architecture.md
+description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
----
-description: rules to parse solution architecture from docs/architecture.md
-globs: 
-alwaysApply: false
----
+# Description: rules to parse solution architecture from docs/architecture.md
+
 # Architecture Understanding
 READ_ARCHITECTURE: |
   File: docs/architecture.md @architecture.md

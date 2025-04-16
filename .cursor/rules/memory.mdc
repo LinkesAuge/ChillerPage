@@ -1,13 +1,10 @@
 ---
-description: ALWAYS INCLUDE to HAVE Project Context
-globs: 
-alwaysApply: false
----
----
-description: ALWAYS INCLUDE to HAVE Project Context.
+description: 
 globs: 
 alwaysApply: true
 ---
+# Description: ALWAYS INCLUDE to HAVE Project Context
+
 # Memory Files Structure
 This outlines the fundamental principles, required files, workflow structure, and essential procedures that govern documentation, and maintaining a memory using file system.
 The Memory Files consists of required core files and optional context files. Files build upon each other in a clear hierarchy:

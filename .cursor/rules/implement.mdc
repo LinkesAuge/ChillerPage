@@ -1,12 +1,10 @@
 ---
-description: Always attach when Implementing Code (Act/Code MODE)
-globs: 
-alwaysApply: false
----
----
-description: Include these rules while IMPLEMENTATION/Coding.
+description: 
 globs: 
 alwaysApply: true
+---
+# Description: Include these rules while IMPLEMENTATION/Coding.
+
 ---
 # IMPLEMENTATION (ACT MODE/Code MODE):
 <PROGRAMMING PRINCIPLES>

@@ -1,13 +1,10 @@
 ---
-description: directory structure to follow
+description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
----
-description: the top-level directory structure for the project
-globs: 
-alwaysApply: false
----     
+# Description: directory structure to follow
+
 # Directory Structure (ChillerPage Project)
 
 This project follows the standard structure for a Next.js (App Router) application using Prisma, Shadcn/ui, and tRPC.
