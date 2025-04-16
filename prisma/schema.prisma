@@ -1,0 +1,420 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Core User and Auth Models (integrating with NextAuth.js)
+// See NextAuth Prisma adapter docs for potentially required fields:
+// https://next-auth.js.org/adapters/prisma
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String? // Display name/alias for website usage
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String? // Profile picture URL (potentially linked to rank)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // User Profile Data
+  preferredLanguage String?   @default("de") // Default German
+  countryOfOrigin   String?
+  gameAliases       String[] // List of in-game aliases
+
+  // Relationships
+  accounts      Account[]
+  sessions      Session[]
+  memberships   ClanMembership[]
+  createdByData ChestDataEntry[] @relation("CreatedBy")
+  updatedByData ChestDataEntry[] @relation("UpdatedBy")
+  articles      Article[]
+  comments      Comment[]
+  sentMessages  PrivateMessage[] @relation("Sender")
+  receivedMessages PrivateMessage[] @relation("Receiver")
+  notifications Notification[]
+  createdEvents Event[]          @relation("CreatedBy")
+
+  @@index([email])
+}
+
+// Clan, Role, Rank, Permission Models
+
+model Clan {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  iconUrl     String?   // URL or identifier for the clan icon
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relationships
+  memberships        ClanMembership[]
+  validationRules    ValidationRule[]
+  correctionRules    CorrectionRule[]
+  scoringRules       ScoringRule[]
+  chestDataEntries   ChestDataEntry[]
+  articles           Article[] // Articles specifically for this clan
+  events             Event[]   // Events specifically for this clan
+  clanAnnouncements  Announcement[] // Announcements linked to this clan
+  chestDefinitions   ChestDefinition[] // Clan-specific chest definitions with icons
+}
+
+// Defines available Roles in the system
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g., "Owner", "Administrator", "Moderator", "Editor", "Member", "Guest"
+  permissions String[] // List of permission keys granted by this role
+
+  // Relationships
+  memberships ClanMembership[]
+}
+
+// Defines available Ranks in the system
+model Rank {
+  id            String @id @default(cuid())
+  name          String @unique // e.g., "Anführer / Leader", "Soldat / Soldier"
+  order         Int    @unique // For sorting/display purposes
+  iconUrl       String?  // URL or identifier for the rank icon
+  defaultRoleId String // ID of the default Role for this Rank
+  permissions   String[] // List of *additional* permission keys granted specifically by this rank
+
+  // Relationships
+  defaultRole Role             @relation(fields: [defaultRoleId], references: [id])
+  memberships ClanMembership[]
+
+  @@index([order])
+  @@index([createdAt])
+}
+
+// Junction table for User's membership in a Clan, including their Role and Rank within that Clan
+model ClanMembership {
+  id        String @id @default(cuid())
+  userId    String
+  clanId    String
+  roleId    String // User's specific Role within this Clan
+  rankId    String // User's specific Rank within this Clan
+  createdAt DateTime @default(now())
+
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clan Clan @relation(fields: [clanId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id]) // Restrict deletion if Role is in use? Consider implications.
+  rank Rank @relation(fields: [rankId], references: [id]) // Restrict deletion if Rank is in use?
+
+  @@unique([userId, clanId]) // A user can only be in a clan once
+  @@index([userId])
+  @@index([clanId])
+  @@index([roleId])
+  @@index([rankId])
+}
+
+// Data Models
+
+model ChestDataEntry {
+  id        String   @id @default(cuid())
+  clanId    String
+  collectedDate DateTime @db.Date // Date the chest was collected in-game (DD.MM.YYYY precision needed)
+  player    String   // In-game player name
+  source    String   // Source description (e.g., "Level 25 Crypt")
+  minLevel  Int?     // Minimum level extracted from source (for range matching)
+  maxLevel  Int?     // Maximum level extracted from source (null if single level or no level)
+  chest     String   // Chest name
+  score     Int      // Assigned score (from import or scoring rules)
+
+  // Metadata
+  createdAt DateTime @default(now())
+  createdById String
+  updatedAt DateTime @updatedAt
+  updatedById String
+
+  // Relationships
+  clan        Clan @relation(fields: [clanId], references: [id], onDelete: Cascade) // Data belongs to a clan
+  createdBy   User @relation("CreatedBy", fields: [createdById], references: [id], onDelete: Restrict) // Prevent user deletion if they created data? Or set null?
+  updatedBy   User @relation("UpdatedBy", fields: [updatedById], references: [id], onDelete: Restrict)
+
+  @@index([clanId])
+  @@index([player])
+  @@index([chest])
+  @@index([collectedDate])
+  @@index([createdAt])
+}
+
+// Rules Models
+
+model ValidationRule {
+  id        String   @id @default(cuid())
+  clanId    String
+  column    String   // Column name this rule applies to (e.g., "PLAYER", "CHEST", "SOURCE")
+  // For MVP, we focus on exact matches (valid list)
+  // Add fields for condition (equals, contains, regex) etc. post-MVP if needed
+  validValue String   // A valid value for the specified column
+  isEnabled Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  clan Clan @relation(fields: [clanId], references: [id], onDelete: Cascade)
+
+  @@unique([clanId, column, validValue]) // Ensure unique valid values per column per clan
+  @@index([clanId])
+  @@index([column])
+}
+
+model CorrectionRule {
+  id        String   @id @default(cuid())
+  clanId    String
+  // For MVP, we focus on exact matches
+  // Add fields for match type (exact, contains, regex) post-MVP if needed
+  fromValue String   // The incorrect value to find
+  toValue   String   // The correct value to replace with
+  column    String   // Optional: Column to apply this rule to (if empty, applies regardless of column)
+  isEnabled Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  clan Clan @relation(fields: [clanId], references: [id], onDelete: Cascade)
+
+  @@unique([clanId, column, fromValue]) // Ensure unique 'from' value per column per clan
+  @@index([clanId])
+  @@index([column])
+}
+
+model ScoringRule {
+  id          String   @id @default(cuid())
+  clanId      String
+  chestName   String?  // Match criteria (null means wildcard) - Use pattern matching later?
+  sourceName  String?  // Match criteria (null means wildcard)
+  minLevel    Int?     // Match criteria (inclusive)
+  maxLevel    Int?     // Match criteria (inclusive) - if null, only match minLevel exactly
+  score       Int      // Score to assign if matched
+  order       Int      // Precedence order (lower number = higher priority)
+  isEnabled   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  clan Clan @relation(fields: [clanId], references: [id], onDelete: Cascade)
+
+  @@index([clanId])
+  @@index([order])
+}
+
+// Content Models (News, Comments)
+
+enum ContentStatus {
+  DRAFT
+  PENDING_APPROVAL
+  PUBLISHED
+  ARCHIVED
+}
+
+model Article {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @db.Text // Rich text content
+  authorId  String
+  clanId    String?  // Optional: If null, article is global/public
+  isAnnouncement Boolean @default(false)
+  isPinned    Boolean  @default(false) // Only relevant if isAnnouncement is true
+  status    ContentStatus @default(DRAFT)
+  publishedAt DateTime? // When the article became publicly visible
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  author   User      @relation(fields: [authorId], references: [id])
+  clan     Clan?     @relation(fields: [clanId], references: [id]) // Can be global
+  comments Comment[]
+
+  @@index([authorId])
+  @@index([clanId])
+  @@index([status])
+  @@index([publishedAt])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  authorId  String
+  articleId String
+  parentId  String?  // For threading
+
+  upvotes   Int      @default(0) // Simple upvote count
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  author  User     @relation(fields: [authorId], references: [id])
+  article Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  parent  Comment? @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[] @relation("Replies")
+
+  @@index([authorId])
+  @@index([articleId])
+  @@index([parentId])
+}
+
+// Add Reactions model later if needed
+
+// Event Calendar Model
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  startTime   DateTime
+  endTime     DateTime?
+  location    String?
+  creatorId   String
+  clanId      String // Events always belong to a specific clan for MVP
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  creator User @relation("CreatedBy", fields: [creatorId], references: [id])
+  clan    Clan @relation(fields: [clanId], references: [id], onDelete: Cascade)
+
+  @@index([creatorId])
+  @@index([clanId])
+  @@index([startTime])
+}
+
+// Messaging & Notification Models
+
+model PrivateMessage {
+  id        String   @id @default(cuid())
+  senderId  String
+  receiverId String
+  content   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relationships
+  sender   User @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+}
+
+// Consider a "Conversation" model later if needed
+
+enum NotificationType {
+  NEW_ARTICLE
+  NEW_COMMENT_REPLY // Needs relation to comment
+  NEW_PRIVATE_MESSAGE // Needs relation to message
+  ARTICLE_APPROVAL_REQUEST // Needs relation to article
+  EVENT_REMINDER // Needs relation to event
+  ADMIN_BROADCAST
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String   // The user receiving the notification
+  type      NotificationType
+  content   String?  // Optional: Short text description
+  link      String?  // Optional: URL to navigate to (e.g., article, message)
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Add relations to Article, Comment, PrivateMessage, Event as needed based on type
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+// Model for tracking data modifications (Audit Trail)
+model AuditLog {
+  id         String    @id @default(cuid())
+  timestamp  DateTime  @default(now())
+  userId     String    // User performing the action
+  action     String    // e.g., "EDIT_DATA", "DELETE_DATA", "BATCH_EDIT_DATA"
+  targetType String?   // e.g., "ChestDataEntry"
+  targetId   String?   // ID of the primary entity affected
+  details    Json?     // JSON blob containing details (e.g., old/new values, affected IDs for batch)
+
+  // Relationships
+  user User @relation(fields: [userId], references: [id]) // Consider if this relation is needed or just store userId string
+
+  @@index([timestamp])
+  @@index([userId])
+  @@index([action])
+  @@index([targetType, targetId])
+}
+
+// Model for Announcements (inherits from Article structure via isAnnouncement flag)
+// No separate model needed currently, but consider if specific fields arise
+
+model Announcement {
+  id         String   @id @default(cuid())
+  articleId  String   @unique // Link to the underlying article
+  targetClanId String?  // Clan this announcement is for (null if global)
+  expiresAt  DateTime? // Optional expiration date for the announcement pin
+
+  // Relationships
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  clan    Clan?   @relation(fields: [targetClanId], references: [id], onDelete: Cascade)
+
+  @@index([targetClanId])
+  @@index([expiresAt])
+}
+
+// New model for defining chest types and icons per clan
+model ChestDefinition {
+  id      String  @id @default(cuid())
+  clanId  String
+  name    String  // Canonical name of the chest type
+  iconUrl String? // URL or identifier for the chest icon
+
+  // Relationships
+  clan Clan @relation(fields: [clanId], references: [id], onDelete: Cascade)
+
+  @@unique([clanId, name]) // Chest names must be unique within a clan
+  @@index([clanId])
+} 

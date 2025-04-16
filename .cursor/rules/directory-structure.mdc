@@ -1,0 +1,35 @@
+---
+description: directory structure to follow
+globs: 
+alwaysApply: false
+---
+---
+description: the top-level directory structure for the project
+globs: 
+alwaysApply: false
+---     
+# Directory Structure (ChillerPage Project)
+
+This project follows the standard structure for a Next.js (App Router) application using Prisma, Shadcn/ui, and tRPC.
+
+```plaintext
+/
+├── .cursor/            # Cursor configuration and rules
+├── .next/              # Next.js build output (generated)
+├── node_modules/       # Project dependencies (generated)
+├── app/                # Next.js App Router (pages, layouts, API routes using tRPC)
+├── src/
+│   ├── components/     # Reusable UI components (built with Shadcn/ui)
+│   │   └── ui/         # Base components from Shadcn/ui library (generated)
+│   ├── lib/            # Utilities, configurations, shared logic
+│   │   ├── api/        # tRPC routers, procedures, context
+│   │   ├── db/         # Prisma client instance, schema access
+│   │   ├── utils/      # Shared utility functions (parsing, formatting, etc.)
+│   │   └── auth/       # NextAuth.js configuration, providers
+│   └── stories/        # Storybook stories for components
+├── prisma/             # Prisma schema, migrations, seeds
+├── public/             # Static assets (images, fonts)
+├── docs/               # Project documentation (PRD, API design, etc.)
+├── tasks/              # Task planning files
+└── # Configuration files (package.json, tsconfig.json, next.config.js, tailwind.config.js, etc.)
+```

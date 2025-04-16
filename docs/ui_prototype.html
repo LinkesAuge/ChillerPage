@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChillerPage UI Prototype (Dark Theme)</title>
+    <!-- Include Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <style type="text/tailwindcss">
+        /* Define dark color scheme based on Total Battle theme */
+        body {
+            @apply bg-gray-900; /* Dark background for the page itself */
+        }
+        .theme-sidebar-bg { @apply bg-gray-950; } /* Very Dark sidebar bg */
+        .theme-content-bg { @apply bg-slate-800; } /* Dark content area bg */
+        .theme-card-bg { @apply bg-slate-900; } /* Darker card/table bg */
+
+        .theme-text-light { @apply text-gray-50; } /* Text on very dark bg (sidebar) */
+        .theme-text-on-dark { @apply text-gray-200; } /* Text on dark content/cards */
+        .theme-text-muted { @apply text-gray-400; } /* Muted text on dark */
+
+        .theme-accent { @apply text-yellow-400; } /* Gold accent text */
+        .theme-accent-bg { @apply bg-yellow-500; } /* Gold accent bg */
+        .theme-accent-border { @apply border-yellow-600; } /* Gold accent border */
+        .theme-hover-accent-bg { @apply hover:bg-yellow-600; } /* Gold hover bg */
+        .theme-hover-accent-text { @apply hover:text-yellow-300; } /* Lighter gold text hover */
+
+        .theme-border-color { @apply border-gray-700; } /* Standard border color for dark theme */
+    </style>
+</head>
+<body class="theme-text-on-dark">
+
+    <h1 class="text-2xl font-bold text-center p-4">ChillerPage UI Prototype (Dark Theme)</h1>
+
+    <!-- Section 1: Public View Example (Adapting theme) -->
+    <div class="container mx-auto p-4 mb-8 theme-card-bg border theme-border-color rounded">
+        <h2 class="text-xl font-semibold mb-4 border-b pb-2 theme-border-color">Public View Example</h2>
+        <div class="p-6 rounded">
+            <nav class="flex justify-between items-center mb-6 pb-2 border-b theme-accent-border">
+                <div class="text-2xl font-bold theme-text-light">Clan Logo</div>
+                <div>
+                    <a href="#" class="theme-text-on-dark theme-hover-accent-text px-3 py-2 rounded">About</a>
+                    <a href="#" class="theme-text-on-dark theme-hover-accent-text px-3 py-2 rounded">Recruitment</a>
+                    <a href="#member-area" class="theme-accent-bg text-gray-900 theme-hover-accent-bg px-4 py-2 rounded font-semibold ml-4">Login / Sign Up</a>
+                </div>
+            </nav>
+            <div class="text-center">
+                <h3 class="text-3xl font-bold mb-2">Welcome to [Clan Name]</h3>
+                <p class="theme-text-muted mb-4">General description, recruitment info, public news snippet...</p>
+                <button class="theme-accent-bg text-gray-900 theme-hover-accent-bg px-6 py-2 rounded font-semibold">Learn More</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Member Area Example -->
+    <div id="member-area" class="container mx-auto p-4 theme-card-bg border theme-border-color rounded">
+        <h2 class="text-xl font-semibold mb-4 border-b pb-2 theme-border-color">Member Area Example</h2>
+        <div class="flex h-screen">
+            <!-- Left Sidebar -->
+            <aside class="w-64 theme-sidebar-bg theme-text-light flex flex-col border-r theme-border-color">
+                <div class="p-4 font-bold text-xl border-b theme-border-color theme-accent">ChillerPage</div>
+                <nav class="flex-1 p-4 space-y-2">
+                    <!-- Active link example -->
+                    <a href="#" class="flex items-center px-3 py-2 rounded bg-gray-700 theme-accent">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        Dashboard
+                    </a>
+                    <!-- Other links -->
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        News & Articles
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                         Members
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                         Events
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                       Chest Data View
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                         Chest Stats/Charts
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                         Admin Panel (*if permitted*)
+                    </a>
+                </nav>
+                <div class="p-4 mt-auto border-t theme-border-color">
+                    <!-- User profile quick view -->
+                    <div class="flex items-center">
+                         <img class="h-8 w-8 rounded-full mr-2" src="https://via.placeholder.com/32" alt="User Avatar">
+                         <div>
+                             <div class="font-semibold">Username</div>
+                             <a href="#" class="text-xs theme-text-muted theme-hover-accent-text">Settings</a> |
+                             <a href="#" class="text-xs theme-text-muted theme-hover-accent-text">Logout</a>
+                         </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 theme-content-bg p-6 overflow-y-auto">
+                <h3 class="text-2xl font-semibold theme-text-light mb-4">Dashboard</h3>
+
+                <!-- Example Content Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Card 1: Announcement -->
+                    <div class="theme-card-bg rounded-lg shadow p-4 border-l-4 theme-accent-border">
+                        <h4 class="font-bold theme-text-light mb-2 flex items-center">
+                            <svg class="h-5 w-5 mr-2 theme-accent" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                            Pinned Announcement!
+                        </h4>
+                        <p class="text-sm theme-text-on-dark">Important update regarding the next event...</p>
+                    </div>
+
+                    <!-- Card 2: News Snippet -->
+                     <div class="theme-card-bg rounded-lg shadow p-4">
+                         <h4 class="font-bold theme-text-light mb-2">Latest News</h4>
+                         <p class="text-sm theme-text-on-dark">Summary of the most recent article goes here...</p>
+                         <a href="#" class="text-sm theme-accent theme-hover-accent-text mt-2 inline-block">Read More</a>
+                     </div>
+
+                    <!-- Card 3: Personal Stats -->
+                     <div class="theme-card-bg rounded-lg shadow p-4">
+                         <h4 class="font-bold theme-text-light mb-2">Your Stats</h4>
+                         <p class="text-sm theme-text-on-dark">Chests Today: 5</p>
+                         <p class="text-sm theme-text-on-dark">Total Score: 1250</p>
+                     </div>
+
+                     <!-- Card 4: Clan Stats -->
+                     <div class="theme-card-bg rounded-lg shadow p-4">
+                         <h4 class="font-bold theme-text-light mb-2">Clan Stats</h4>
+                         <p class="text-sm theme-text-on-dark">Total Clan Score: 98765</p>
+                         <p class="text-sm theme-text-on-dark">Active Members: 45</p>
+                     </div>
+                </div>
+
+                 <h3 class="text-2xl font-semibold theme-text-light mt-8 mb-4">Placeholder Data Table</h3>
+                 <!-- Example Table -->
+                 <div class="theme-card-bg rounded-lg shadow overflow-hidden">
+                    <table class="min-w-full divide-y theme-border-color">
+                        <thead class="bg-slate-800"> <!-- Slightly different header bg -->
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium theme-text-light uppercase tracking-wider">Column 1</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium theme-text-light uppercase tracking-wider">Column 2</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium theme-text-light uppercase tracking-wider">Column 3</th>
+                                <th scope="col" class="relative px-6 py-3">
+                                    <span class="sr-only">Edit</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="theme-card-bg divide-y theme-border-color">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm theme-text-on-dark">Data A1</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm theme-text-on-dark">Data B1</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm theme-text-on-dark">Data C1</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="theme-accent theme-hover-accent-text">Edit</a>
+                                </td>
+                            </tr>
+                            <!-- More rows... -->
+                             <tr> <!-- Example alternate row - no explicit bg needed in dark mode? -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm theme-text-on-dark">Data A2</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm theme-text-on-dark">Data B2</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm theme-text-on-dark">Data C2</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="theme-accent theme-hover-accent-text">Edit</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+</body>
+</html> 
