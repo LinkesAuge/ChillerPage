@@ -10,9 +10,11 @@ This file lists the key documents defining the ChillerPage project.
 
 ## Next Steps
 
-To begin implementing this architecture, I recommend creating the following foundational components:
+Documentation and prototyping are complete. Proceed with Phase 1 tasks:
 
-- Create the basic project structure
-- Implement the orchestration engine
-- Set up the LLM agent interfaces
-- Develop a simple CLI for testing
+- Setup Next.js project with App Router & TypeScript
+- Configure Tailwind CSS and design tokens
+- Initialize Prisma and Supabase connection
+- Install and configure tRPC and NextAuth.js
+- Implement basic layout components (`RootLayout`, `Header`, `Footer`, `MemberArea`)
+- Scaffold foundational pages: Login/Signup, Protected Routes

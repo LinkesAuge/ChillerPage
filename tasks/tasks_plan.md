@@ -12,6 +12,20 @@ Reference Documents:
 *   Product Requirements Document: `docs/product_requirement_docs.md`
 *   API Design (tRPC Routers): `docs/api_design.md`
 
+## Phase 0: Documentation & Prototyping (Completed)
+
+- Updated `architecture.md` (TOC, container & sequence diagrams, infra diagram, auth flows, ADR section)
+- Created ADR template under `docs/adr/template.md`
+- Enhanced `technical.md` (developer setup, CI/CD, code quality, testing, env vars)
+- Enhanced `api_design.md` (TOC, RBAC, error handling, pagination, sample procedures)
+- Enhanced `product_requirement_docs.md` (TOC, acceptance criteria, prioritization, NFRs)
+- Annotated `ui_prototype.html` with hotspots and accessibility improvements
+- Created design tokens (`src/lib/designTokens.ts`) and updated `tsconfig.json` for `@/*` paths
+- Initialized Storybook config (`.storybook/main.js`, `preview.js`), scripts, and installed dependencies
+- Stubbed UI components: `Button`, `Card`
+- Built prototype components: `PublicView`, `MemberArea`
+- Added Storybook stories for `PublicView` and `MemberArea`
+
 ## Phase 1: Foundation & Authentication
 
 **Goal:** Set up the basic project structure, core dependencies, database connection, authentication, and initial UI layout.

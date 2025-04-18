@@ -46,3 +46,92 @@ The application is built using the following primary technologies:
 *   **Database:** Supabase hosted PostgreSQL.
 *   **Build Process:** Standard Next.js build process (`next build`).
 *   **Environment Variables:** Managing secrets and configuration (API keys, database URLs) via environment variables.
+
+## 5. Developer Setup
+
+*   Clone the repository and install dependencies:
+
+    ```bash
+    git clone https://github.com/your-org/ChillerPage.git
+    cd ChillerPage
+    npm install
+    ```
+
+*   Copy the environment template and configure `.env.local`:
+
+    ```bash
+    cp .env.example .env.local
+    # then update values in .env.local
+    ```
+
+*   Run database migrations and seed initial data:
+
+    ```bash
+    npx prisma migrate dev --name init
+    npx prisma db seed
+    ```
+
+*   Start the development server:
+
+    ```bash
+    npm run dev
+    ```
+
+## 6. CI/CD Workflows
+
+*   CI/CD pipelines are defined under `.github/workflows/`:
+    1. **Build:** install dependencies, lint, and type-check (`npm run lint && npm run typecheck`)
+    2. **Test:** execute unit and integration tests (`npm test`)
+    3. **Migrations:** deploy Prisma migrations (`npx prisma migrate deploy`)
+    4. **Deploy:** run Next.js build (`npm run build`) and trigger Vercel automatic deploy on `main`
+
+## 7. Code Quality & Tooling
+
+*   **ESLint:** enforced via `.eslintrc.js` for code standards and import rules
+*   **Prettier:** formatting configured in `.prettierrc` to maintain consistent style
+*   **TypeScript:** strict mode enabled in `tsconfig.json` (`"strict": true`), with path aliases defined
+
+## 8. Testing Strategy
+
+*   **Directory Structure:** all tests live under the `test/` folder in the project root, organized by type:
+    *   `test/unit/` for isolated Jest unit tests
+    *   `test/integration/` for tRPC and API integration tests
+
+*   **Example Unit Test (Jest):**
+
+    ```ts
+    // test/unit/sum.test.ts
+    import { sum } from '../src/lib/utils/math';
+
+    test('adds two numbers', () => {
+      expect(sum(1, 2)).toBe(3);
+    });
+    ```
+
+*   **Example tRPC Integration Test:**
+
+    ```ts
+    // test/integration/trpc.test.ts
+    import { appRouter } from '../src/lib/api/router';
+
+    test('getAllClanChests returns an array', async () => {
+      const caller = appRouter.createCaller({ session: null });
+      const result = await caller.getAllClanChests();
+      expect(Array.isArray(result)).toBe(true);
+    });
+    ```
+
+## 9. Environment Variables & Secrets
+
+*   Define keys in `.env.example` and populate `.env.local` (not committed):
+
+    ```bash
+    DATABASE_URL="postgresql://user:pass@host:port/dbname"
+    NEXTAUTH_SECRET="your-random-secret"
+    SUPABASE_URL="https://xyz.supabase.co"
+    SUPABASE_KEY="supabase-service-role-key"
+    GITHUB_ID=""
+    GITHUB_SECRET=""
+    ```
+
+*   **Vercel Secrets:** configure via Vercel Dashboard or CLI (`vercel env add`) for production/staging environments.

@@ -1,0 +1,32 @@
+{
+  "name": "chillerpage",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "devDependencies": {
+    "@storybook/builder-vite": "^8.6.12",
+    "@storybook/cli": "^8.6.12",
+    "@storybook/react-vite": "^8.6.12",
+    "@vitejs/plugin-react": "^4.4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "storybook": "sb dev -p 6006",
+    "build-storybook": "sb build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LinkesAuge/ChillerPage.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LinkesAuge/ChillerPage/issues"
+  },
+  "homepage": "https://github.com/LinkesAuge/ChillerPage#readme",
+  "description": ""
+}

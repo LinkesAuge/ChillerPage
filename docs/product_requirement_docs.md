@@ -1,5 +1,39 @@
 # Product Requirements Document: Clan Community Website
 
+<!-- Table of Contents -->
+- [Product Requirements Document: Clan Community Website](#product-requirements-document-clan-community-website)
+  - [1. Introduction \& Goals](#1-introduction--goals)
+    - [1.1. Overview](#11-overview)
+    - [1.2. Goals](#12-goals)
+    - [1.3. Target Audience](#13-target-audience)
+  - [2. User Roles, Ranks \& Personas](#2-user-roles-ranks--personas)
+    - [2.1. Roles](#21-roles)
+    - [2.2. Ranks (Based on "Total Battle")](#22-ranks-based-on-total-battle)
+    - [2.3. Clan Affiliation](#23-clan-affiliation)
+    - [2.4. Personas (Example - TBD in more detail)](#24-personas-example---tbd-in-more-detail)
+  - [3. Functional Requirements](#3-functional-requirements)
+    - [3.1. Public Facing Website](#31-public-facing-website)
+    - [3.2. User Authentication \& Management](#32-user-authentication--management)
+      - [3.2.1. User Deactivation/Deletion](#321-user-deactivationdeletion)
+    - [3.3. Clan \& Rank System](#33-clan--rank-system)
+    - [3.4. Permissions System](#34-permissions-system)
+    - [3.5. Member Dashboard](#35-member-dashboard)
+    - [3.6. News, Announcements \& Discussions](#36-news-announcements--discussions)
+    - [3.7. Data Import \& Preview](#37-data-import--preview)
+    - [3.8. Scoring System](#38-scoring-system)
+    - [3.9. Data Visualization](#39-data-visualization)
+    - [3.10. Data Viewing \& Editing](#310-data-viewing--editing)
+    - [3.11. Event Calendar](#311-event-calendar)
+    - [3.12. Member Directory](#312-member-directory)
+    - [3.13. Private Messaging \& Notifications](#313-private-messaging--notifications)
+    - [3.14. Multi-language Support](#314-multi-language-support)
+  - [4. Acceptance Criteria](#4-acceptance-criteria)
+    - [4.1 Community Hub](#41-community-hub)
+    - [4.2 Data Analysis](#42-data-analysis)
+    - [4.3 Profile Management](#43-profile-management)
+  - [5. Prioritization \& Milestones](#5-prioritization--milestones)
+  - [6. Non-Functional Requirements](#6-non-functional-requirements)
+
 ## 1. Introduction & Goals
 
 ### 1.1. Overview
@@ -382,89 +416,38 @@ Ensures the application interface is available in multiple languages.
     *   The application should attempt to detect the user's browser language preference on first visit (before login or if no preference is set).
 *   **Content:** User-generated content (articles, comments, messages) is *not* automatically translated. The language preference only affects the application's UI strings.
 
-## 4. Non-Functional Requirements
+## 4. Acceptance Criteria
 
-These requirements define the quality attributes and constraints of the system.
+### 4.1 Community Hub
+*Given* a clan member visits the landing page  
+*When* they view announcements and news sections  
+*Then* they see pinned announcements and a news feed filtered by their clan(s).
 
-### 4.1. Technology Stack
+### 4.2 Data Analysis
+*Given* a clan member has chest CSV data  
+*When* they upload via the data import feature  
+*Then* they see parsed results, can commit, and get a confirmation.
 
-The application will be built using the following technologies:
+### 4.3 Profile Management
+*Given* an authenticated user  
+*When* they update their profile fields  
+*Then* changes persist and reflect in their session/profile view.
 
-*   **Frontend Framework:** Next.js (App Router)
-*   **Language:** TypeScript
-*   **UI Components:** Shadcn/ui
-*   **Styling:** Tailwind CSS
-*   **Animation:** Framer Motion
-*   **Icons:** Lucide Icons
-*   **Backend API:** tRPC (integrated with Next.js API routes)
-*   **Database:** Supabase (PostgreSQL)
-*   **ORM:** Prisma
-*   **Authentication:** NextAuth.js
-*   **Component Development/Documentation:** Storybook
+## 5. Prioritization & Milestones
 
-### 4.2. Project Structure
+| Feature                  | Priority     | Milestone |
+|--------------------------|--------------|-----------|
+| Public Home Page         | Must Have    | MVP       |
+| User Authentication      | Must Have    | MVP       |
+| Data Import & Preview    | Must Have    | MVP       |
+| Chest Data Visualization | Should Have  | Phase 2   |
+| Clan User Management     | Should Have  | MVP       |
+| Discussions & Comments   | Nice to Have | Phase 2   |
 
-The codebase will adhere to the following directory structure:
+## 6. Non-Functional Requirements
 
-```
-/
-├── app/                  # Next.js App Router (pages, layouts, API routes using tRPC)
-├── src/
-│   ├── components/       # Reusable UI components (built with Shadcn/ui)
-│   │   └── ui/           # Base components from Shadcn/ui library
-│   ├── lib/              # Utilities, configurations, shared logic
-│   │   ├── api/          # tRPC routers, procedures, context
-│   │   ├── db/           # Prisma client instance, schema access
-│   │   ├── utils/        # Shared utility functions (parsing, formatting, etc.)
-│   │   └── auth/         # NextAuth.js configuration, providers
-│   └── stories/          # Storybook stories for components
-├── prisma/               # Prisma schema, migrations, seeds
-├── public/               # Static assets (images, fonts)
-└── # Configuration files (tsconfig.json, next.config.js, tailwind.config.js, etc.)
-```
-
-### 4.3. User Interface & User Experience (UI/UX)
-
-*   **Design Aesthetic:** Modern, clean, and visually appealing.
-    *   The overall visual theme and layout will adhere to the style defined in the static prototype `docs/ui_prototype.html`, featuring a dark theme (dark blue/grey backgrounds, light text) with gold accents.
-    *   The styling should potentially draw inspiration from the previous "ChestBuddy" application or the "Total Battle" game theme where appropriate, while maintaining clarity.
-*   **Responsiveness:** The application must be fully responsive and usable across various screen sizes (desktop, tablet, mobile).
-*   **User Feedback:** Provide clear and timely feedback for user actions, especially for potentially long-running operations like data import/processing. Utilize loading states, progress indicators, and success/error messages appropriately.
-*   **Navigation:** Implement intuitive navigation, particularly the left-hand sidebar for the member area.
-*   **Accessibility:** Adhere to basic web accessibility standards (WCAG AA where feasible) to ensure usability for users with disabilities. Use semantic HTML and provide appropriate ARIA attributes where necessary.
-
-### 4.4. Reliability & Error Handling
-
-*   **High Priority:** The application must be reliable and stable.
-*   **Graceful Degradation:** Handle potential errors gracefully (e.g., network issues, database errors, parsing failures) without crashing the application.
-*   **Error Logging:** Implement server-side and potentially client-side error logging to facilitate debugging.
-*   **Data Integrity:** Ensure operations (especially data import and editing) maintain data consistency in the database.
-
-### 4.5. Performance
-
-*   **Responsiveness:** Prioritize UI responsiveness. Avoid blocking the main thread during computationally intensive tasks (e.g., large CSV parsing, complex calculations). Utilize techniques like web workers or server-side processing with background jobs if necessary.
-*   **Database Optimization:** Design efficient database queries (Prisma) and appropriate indexing (Supabase/PostgreSQL) to handle potentially large amounts of chest data.
-*   **Load Times:** Optimize application load times using standard Next.js techniques (code splitting, image optimization, etc.).
-
-### 4.6. Security
-
-*   **Authentication:** Secure user authentication handled via NextAuth.js.
-*   **Authorization:** Implement robust permission checks based on Role/Rank/Clan for all sensitive actions and data access (both frontend and backend via tRPC middleware).
-*   **Data Validation:** Validate all user input on the server-side to prevent injection attacks and ensure data integrity.
-*   **Dependencies:** Keep dependencies up-to-date to mitigate security vulnerabilities.
-*   **Supabase Security:** Utilize Supabase Row Level Security (RLS) where appropriate as an additional layer of data protection.
-
-## 5. Future Considerations / Post-MVP
-
-Features and improvements to consider after the initial Minimum Viable Product (MVP) launch:
-
-*   **Advanced Dashboard Customization:** Allow users more control over dashboard layout (e.g., drag-and-drop components, adding/removing different widgets).
-*   **Enhanced Discussions:** More advanced Reddit-like features (e.g., sub-comments sorting options, user flair, @mentions).
-*   **Progressive Web App (PWA) / Mobile App:** Develop dedicated mobile experiences.
-*   **Advanced Data Analysis Tools:** More sophisticated charts, reports, and data exploration features beyond the MVP dedicated charts page.
-*   **Real-time Features:** Implement real-time updates for notifications, messaging, or potentially live data views using Supabase Realtime or WebSockets.
-*   **Gamification:** Introduce points, badges, or leaderboards based on website participation or in-game achievements (derived from data).
-*   **Expanded Admin Panel:** More comprehensive tools for site management, analytics, and configuration (e.g., fine-grained permission management UI, audit log viewer).
-*   **Recurring Events:** Add support for creating events that repeat on a schedule.
-*   **Notification Preferences:** Allow users to customize which types of notifications they receive.
-*   **Advanced User Offboarding:** Options for admins regarding data handling upon user deletion (e.g., choice to anonymize vs. retain vs. delete).
+* **Performance:** Handle up to 100 concurrent users with page load times < 1s (SSR/SSG caches).
+* **Scalability:** Use serverless infrastructure (Vercel functions, Supabase) to scale horizontally without downtime.
+* **Security:** HTTPS everywhere, secure cookies, OWASP Top 10 mitigations, input validation and rate limiting (max 100 requests/min per user).
+* **Maintenance:** Automated backups in Supabase, monitoring & alerting for errors (Sentry), logging for audit trails.
+* **Accessibility:** Compliance with WCAG 2.1 AA (keyboard navigation, color contrast >= 4.5:1, ARIA roles).

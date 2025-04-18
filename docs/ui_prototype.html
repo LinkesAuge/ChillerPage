@@ -30,20 +30,20 @@
 </head>
 <body class="theme-text-on-dark">
 
-    <h1 class="text-2xl font-bold text-center p-4">ChillerPage UI Prototype (Dark Theme)</h1>
+    <h1 class="text-2xl font-bold text-center p-4" role="banner">ChillerPage UI Prototype (Dark Theme)</h1>
 
-    <!-- Section 1: Public View Example (Adapting theme) -->
-    <div class="container mx-auto p-4 mb-8 theme-card-bg border theme-border-color rounded">
+    <!-- HOTSPOT: Public View - Navbar with Login/Signup CTA -->
+    <div class="container mx-auto p-4 mb-8 theme-card-bg border theme-border-color rounded" role="region" aria-label="Public View Example">
         <h2 class="text-xl font-semibold mb-4 border-b pb-2 theme-border-color">Public View Example</h2>
+        <nav class="flex justify-between items-center mb-6 pb-2 border-b theme-accent-border" role="navigation" aria-label="Public Site Navigation">
+            <div class="text-2xl font-bold theme-text-light">Clan Logo</div>
+            <div>
+                <a href="#" class="theme-text-on-dark theme-hover-accent-text px-3 py-2 rounded" tabindex="0">About</a>
+                <a href="#" class="theme-text-on-dark theme-hover-accent-text px-3 py-2 rounded" tabindex="0">Recruitment</a>
+                <a href="#member-area" class="theme-accent-bg text-gray-900 theme-hover-accent-bg px-4 py-2 rounded font-semibold ml-4" tabindex="0" aria-label="Login or Sign Up">Login / Sign Up</a>
+            </div>
+        </nav>
         <div class="p-6 rounded">
-            <nav class="flex justify-between items-center mb-6 pb-2 border-b theme-accent-border">
-                <div class="text-2xl font-bold theme-text-light">Clan Logo</div>
-                <div>
-                    <a href="#" class="theme-text-on-dark theme-hover-accent-text px-3 py-2 rounded">About</a>
-                    <a href="#" class="theme-text-on-dark theme-hover-accent-text px-3 py-2 rounded">Recruitment</a>
-                    <a href="#member-area" class="theme-accent-bg text-gray-900 theme-hover-accent-bg px-4 py-2 rounded font-semibold ml-4">Login / Sign Up</a>
-                </div>
-            </nav>
             <div class="text-center">
                 <h3 class="text-3xl font-bold mb-2">Welcome to [Clan Name]</h3>
                 <p class="theme-text-muted mb-4">General description, recruitment info, public news snippet...</p>
@@ -52,41 +52,41 @@
         </div>
     </div>
 
-    <!-- Section 2: Member Area Example -->
-    <div id="member-area" class="container mx-auto p-4 theme-card-bg border theme-border-color rounded">
+    <!-- HOTSPOT: Member Area Sidebar with role-based links -->
+    <div id="member-area" class="container mx-auto p-4 theme-card-bg border theme-border-color rounded" role="main" aria-label="Member Area">
         <h2 class="text-xl font-semibold mb-4 border-b pb-2 theme-border-color">Member Area Example</h2>
         <div class="flex h-screen">
             <!-- Left Sidebar -->
-            <aside class="w-64 theme-sidebar-bg theme-text-light flex flex-col border-r theme-border-color">
+            <aside class="w-64 theme-sidebar-bg theme-text-light flex flex-col border-r theme-border-color" role="navigation" aria-label="Main Sidebar">
                 <div class="p-4 font-bold text-xl border-b theme-border-color theme-accent">ChillerPage</div>
-                <nav class="flex-1 p-4 space-y-2">
-                    <!-- Active link example -->
-                    <a href="#" class="flex items-center px-3 py-2 rounded bg-gray-700 theme-accent">
-                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                <nav class="flex-1 p-4 space-y-2" aria-label="Sidebar Links">
+                    <!-- HOTSPOT: Dashboard link, default active -->
+                    <a href="#" class="flex items-center px-3 py-2 rounded bg-gray-700 theme-accent" tabindex="0" aria-current="page" aria-label="Dashboard">
+                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" aria-hidden="true" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Dashboard
                     </a>
                     <!-- Other links -->
-                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text" tabindex="0" aria-label="News and Articles">
                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         News & Articles
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text" tabindex="0" aria-label="Members">
                          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                          Members
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text" tabindex="0" aria-label="Events">
                          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                          Events
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text" tabindex="0" aria-label="Chest Data View">
                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                        Chest Data View
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
-                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text" tabindex="0" aria-label="Chest Stats/Charts">
+                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                          Chest Stats/Charts
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text">
+                    <a href="#" class="flex items-center px-3 py-2 rounded hover:bg-gray-700 theme-hover-accent-text" tabindex="0" aria-label="Admin Panel">
                          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                          Admin Panel (*if permitted*)
                     </a>

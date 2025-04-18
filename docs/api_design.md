@@ -1,5 +1,13 @@
 # API Design (tRPC Routers)
 
+<!-- Table of Contents -->
+- [Root Router Structure](#root-router-structure)
+- [Router Definitions (High-Level Procedures)](#router-definitions-high-level-procedures)
+- [RBAC & Permissions](#rbac--permissions)
+- [Error Handling](#error-handling)
+- [Pagination & Filtering Guidelines](#pagination--filtering-guidelines)
+- [Sample Procedure Definition: dataRouter](#sample-procedure-definition-datarouter)
+
 This document outlines the proposed structure and procedures for the tRPC API layer.
 
 ## Root Router Structure
@@ -144,4 +152,410 @@ export type AppRouter = typeof appRouter;
 *   **`listChestDefinitions`**: (Input: ClanID) -> Output: List of ChestDefinitions. Requires `rules:manage`.
 *   **`addChestDefinition`**: (Input: ClanID, Name, IconUrl?) -> Output: New ChestDefinition. Requires `rules:manage`.
 *   **`updateChestDefinition`**: (Input: DefinitionID, Changes) -> Output: Updated ChestDefinition. Requires `rules:manage`.
-*   **`deleteChestDefinition`**: (Input: DefinitionID) -> Output: Status. Requires `rules:manage`. 
+*   **`deleteChestDefinition`**: (Input: DefinitionID) -> Output: Status. Requires `rules:manage`.
+
+## RBAC & Permissions
+
+| Procedure                         | Required Permission   |
+|-----------------------------------|-----------------------|
+| `data.listChestData`              | `data:view`           |
+| `data.updateChestDataEntry`       | `data:edit`           |
+| `data.commitPreviewData`          | `data:import`         |
+| `clan.getClanDetails`             | `clan:view`           |
+| `clan.listUserClans`              | `clan:member:view`    |
+| `user.updateProfile`              | `user:edit`           |
+
+## Error Handling
+
+All procedures use tRPC's built-in `TRPCError` to surface errors consistently:
+
+* **BAD_REQUEST**: Input validation failed (e.g. Zod parsing). Clients receive:
+  ```json
+  {
+    "error": {
+      "message": "Invalid input: ...",
+      "code": "BAD_REQUEST",
+      "data": { "zodError": {/* detailed issues */} }
+    }
+  }
+  ```
+* **INTERNAL_SERVER_ERROR**: Unexpected failures such as database or network errors.
+* **UNAUTHORIZED** (`401`): Missing or invalid session (no user).
+* **FORBIDDEN** (`403`): User lacks required permission.
+
+## Pagination & Filtering Guidelines
+
+We standardize pagination for list endpoints:
+
+* Use **cursor-based pagination** with `cursor` (last item ID) and `limit` parameters.
+* Alternatively, for static or simple lists, use **offset pagination** (`skip`, `take`).
+* Support optional `filter` and `sort` parameters in input type.
+* Clients should handle `nextCursor` returned in response to fetch subsequent pages.
+
+## Sample Procedure Definition: dataRouter
+
+Below is a fleshed-out example for the `data.parseAndPreviewData` procedure. Use this template for other procedures:
+
+### `parseAndPreviewData`
+
+**Route:** `data.parseAndPreviewData`  
+**Permission:** `data:import`
+
+```ts
+// src/lib/api/routers/data.ts
+
+// Input Type
+type ParseAndPreviewDataInput = {
+  rawCsv: string;
+  filename?: string;
+  clanId: string;
+};
+
+// Output Type
+type ParseAndPreviewDataOutput = {
+  entries: Array<{ date: string; player: string; score: number }>;
+};
+```
+
+**Example Request (tRPC JSON payload):**
+```json
+{
+  "json": "{\"rawCsv\": \"date,player,score\\n2023-09-01,Player1,100\", \
+               \"filename\": \"chests.csv\", \
+               \"clanId\": \"clan_abc123\"}"
+}
+```
+
+**Example Response:**
+```json
+{
+  "result": {
+    "data": {
+      "entries": [
+        { "date": "2023-09-01", "player": "Player1", "score": 100 }
+      ]
+    }
+  }
+}
+```
+
+## Sample Procedure Definition: authRouter
+
+### `getSession`
+
+**Route:** `auth.getSession`  
+**Permission:** none (public)
+
+```ts
+// Input Type
+type GetSessionInput = void;
+
+// Output Type
+type GetSessionOutput = {
+  user?: { id: string; name: string; email: string };
+  expires: string;
+};
+```
+
+**Example Request:**
+```json
+{"json": "{}"}
+```
+
+**Example Response:**
+```json
+{
+  "result": {
+    "data": {
+      "user": { "id": "user_123", "name": "Alice", "email": "alice@example.com" },
+      "expires": "2023-10-01T12:00:00.000Z"
+    }
+  }
+}
+```
+
+## Sample Procedure Definition: userRouter
+
+### `updateProfile`
+
+**Route:** `user.updateProfile`  
+**Permission:** `user:edit`
+
+```ts
+// Input Type
+type UpdateProfileInput = {
+  name?: string;
+  lang?: string;
+  country?: string;
+};
+
+// Output Type
+type UpdateProfileOutput = {
+  success: boolean;
+  updatedAt: string;
+};
+```
+
+**Example Request:**
+```json
+{
+  "json": "{\"name\": \"Bob\", \"country\": \"DE\"}"
+}
+```
+
+**Example Response:**
+```json
+{
+  "result": {
+    "data": { "success": true, "updatedAt": "2023-09-20T08:30:00.000Z" }
+  }
+}
+```
+
+## Sample Procedure Definition: clanRouter
+
+### `getClanDetails`
+
+**Route:** `clan.getClanDetails`  
+**Permission:** `clan:view`
+
+```ts
+// Input Type
+type GetClanDetailsInput = { clanId: string };
+
+// Output Type
+type GetClanDetailsOutput = {
+  id: string;
+  name: string;
+  createdAt: string;
+  memberCount: number;
+};
+```
+
+**Example Request:**
+```json
+{"json": "{\"clanId\": \"clan_abc123\"}"}
+```
+
+**Example Response:**
+```json
+{
+  "result": {
+    "data": { "id": "clan_abc123", "name": "Guardians", "createdAt": "2023-01-01T00:00:00.000Z", "memberCount": 24 }
+  }
+}
+```
+
+## Sample Procedure Definition: rulesRouter
+
+### `listValidationRules`
+
+**Route:** `rules.listValidationRules`  
+**Permission:** `rules:manage`
+
+```ts
+// Input Type
+type ListValidationRulesInput = { clanId: string };
+
+// Output Type
+type ListValidationRulesOutput = Array<{
+  id: string;
+  column: string;
+  value: string;
+}>;
+```
+
+**Example Request:**
+```json
+{"json": "{\"clanId\": \"clan_abc123\"}"}
+```
+
+**Example Response:**
+```json
+{
+  "result": {
+    "data": [ { "id": "rule_1", "column": "score", "value": ">=0" } ]
+  }
+}
+```
+
+## Sample Procedure Definition: contentRouter
+
+### `createArticle`
+
+**Route:** `content.createArticle`  
+**Permission:** `article:create`
+
+```ts
+// Input Type
+type CreateArticleInput = {
+  title: string;
+  content: string;
+  clanId?: string;
+  isAnnouncement?: boolean;
+};
+
+// Output Type
+type CreateArticleOutput = {
+  id: string;
+  status: 'DRAFT' | 'PENDING' | 'PUBLISHED';
+};
+```
+
+**Example Request:**
+```json
+{"json": "{\"title\": \"New Event\", \"content\": \"Details...\", \"clanId\": \"clan_abc123\"}"}
+```
+
+**Example Response:**
+```json
+{
+  "result": {
+    "data": { "id": "article_456", "status": "PENDING" }
+  }
+}
+```
+
+## Sample Procedure Definition: eventRouter
+
+### `createEvent`
+
+**Route:** `event.createEvent`  
+**Permission:** `event:create`
+
+```ts
+// Input Type
+type CreateEventInput = {
+  name: string;
+  date: string;
+  clanId: string;
+};
+
+// Output Type
+type CreateEventOutput = {
+  id: string;
+  createdAt: string;
+};
+```
+
+**Example Request:**
+```json
+{"json": "{\"name\": \"Raid Night\", \"date\": \"2023-10-05\", \"clanId\": \"clan_abc123\"}"}
+```
+
+**Example Response:**
+```json
+{
+  "result": {
+    "data": { "id": "event_789", "createdAt": "2023-09-15T14:00:00.000Z" }
+  }
+}
+```
+
+## Sample Procedure Definition: messageRouter
+
+### `sendMessage`
+
+**Route:** `message.sendMessage`  
+**Permission:** `message:send:private`
+
+```ts
+// Input Type
+type SendMessageInput = {
+  receiverId: string;
+  content: string;
+};
+
+// Output Type
+type SendMessageOutput = {
+  messageId: string;
+  sentAt: string;
+};
+```
+
+**Example Request:**
+```json
+{"json": "{\"receiverId\": \"user_234\", \"content\": \"Hello!\"}"}
+```
+
+**Example Response:**
+```json
+{
+  "result": {
+    "data": { "messageId": "msg_1011", "sentAt": "2023-09-20T09:15:00.000Z" }
+  }
+}
+```
+
+## Sample Procedure Definition: notificationRouter
+
+### `listNotifications`
+
+**Route:** `notification.listNotifications`  
+**Permission:** `notification:view`
+
+```ts
+// Input Type
+type ListNotificationsInput = {
+  unreadOnly?: boolean;
+  cursor?: string;
+  limit?: number;
+};
+
+// Output Type
+type ListNotificationsOutput = {
+  items: Array<{ id: string; message: string; read: boolean }>;
+  nextCursor?: string;
+};
+```
+
+**Example Request:**
+```json
+{"json": "{\"unreadOnly\": true, \"limit\": 10}"}
+```
+
+**Example Response:**
+```json
+{
+  "result": {
+    "data": { "items": [ { "id": "notif_1", "message": "You have a new clan invite", "read": false } ], "nextCursor": "notif_1" }
+  }
+}
+```
+
+## Sample Procedure Definition: adminRouter
+
+### `listUsers`
+
+**Route:** `admin.listUsers`  
+**Permission:** `admin_panel:view`
+
+```ts
+// Input Type
+type ListUsersInput = {
+  clanId?: string;
+  role?: string;
+  skip?: number;
+  take?: number;
+};
+
+// Output Type
+type ListUsersOutput = {
+  users: Array<{ id: string; name: string; role: string }>;
+  nextCursor?: number;
+};
+```
+
+**Example Request:**
+```json
+{"json": "{\"role\": \"admin\", \"take\": 20}"}
+```
+
+**Example Response:**
+```json
+{
+  "result": {
+    "data": { "users": [ { "id": "user_1", "name": "Admin", "role": "admin" } ], "nextCursor": 21 }
+  }
+}
+``` 

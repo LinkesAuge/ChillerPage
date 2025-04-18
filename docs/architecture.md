@@ -1,5 +1,15 @@
 # Architecture Overview - ChillerPage
 
+<!-- Table of Contents -->
+- [Architecture Overview - ChillerPage](#architecture-overview---chillerpage)
+  - [1. System Context](#1-system-context)
+  - [2. Container Diagram (Conceptual)](#2-container-diagram-conceptual)
+  - [3. High-Level Diagram](#3-high-level-diagram)
+  - [4. Sequence Diagram](#4-sequence-diagram)
+  - [5. Infrastructure Diagram](#5-infrastructure-diagram)
+  - [6. Authentication Flows](#6-authentication-flows)
+  - [7. Architectural Decision Records](#7-architectural-decision-records)
+
 This document provides a high-level overview of the ChillerPage application architecture.
 
 ## 1. System Context
@@ -66,3 +76,89 @@ C4Context
 *Diagram Notes:*
 *   The Next.js App, tRPC API, Prisma, and NextAuth.js components are tightly integrated within the same Next.js project structure.
 *   Data flow primarily involves the User interacting with the Next.js App, which calls the tRPC API. The API uses Prisma to interact with the Supabase DB and NextAuth.js for session/auth verification.
+
+## 4. Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    actor User as "User/UI"
+    participant NextApp as "Next.js App"
+    participant TRPC as "tRPC API"
+    participant Prisma as "Prisma ORM"
+    participant Supabase as "Supabase DB"
+
+    User->>NextApp: Submit chest data
+    NextApp->>TRPC: tRPC mutation `addChestData(input)`
+    TRPC->>Prisma: `prisma.chest.create({ data: input })`
+    Prisma->>Supabase: SQL INSERT chest
+    Supabase-->>Prisma: Confirmation
+    Prisma-->>TRPC: Created chest record
+    TRPC-->>NextApp: Mutation response (success)
+    NextApp-->>User: Show success notification
+
+    alt Validation Error
+        TRPC--xUser: tRPCError("BAD_REQUEST", message)
+    else Database Error
+        TRPC--xUser: tRPCError("INTERNAL_SERVER_ERROR", message)
+    end
+```
+
+## 5. Infrastructure Diagram
+
+```mermaid
+graph LR
+    subgraph Vercel["Vercel (Serverless)"]
+        NextApp["Next.js App (SSR/SSG Serverless)"]
+    end
+    subgraph CDN["CDN (Edge Delivery)"]
+        CDNNode["Edge Network"]
+    end
+    Supabase["Supabase (PostgreSQL)"]
+    Logging["Logging & Monitoring (Sentry/Datadog)"]
+
+    User-->|HTTPS|CDNNode-->|Requests|NextApp
+    NextApp-->|tRPC|Supabase
+    NextApp-->|Logs|Logging
+    Supabase-->|Metrics|Logging
+```
+
+## 6. Authentication Flows
+
+We use **NextAuth.js** to manage OAuth and session storage:
+
+1. **OAuth Sign-In**  
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant App as "Next.js App"
+    participant Auth as "NextAuth.js"
+    participant IdP as "Identity Provider"
+    participant DB as "Supabase"
+
+    User->>App: Clicks "Sign In"
+    App->>Auth: auth/signin(provider)
+    Auth->>IdP: OAuth Authorization Request
+    IdP-->>Auth: OAuth Authorization Code
+    Auth->>Auth: Exchange code for tokens
+    Auth->>DB: Store user, account, session
+    Auth-->>App: Set session cookie (HTTP-only)
+    App-->>User: Redirect to dashboard
+```
+
+2. **Session Retrieval**  
+On each request, Next.js calls NextAuth's `getSession()`, which reads the session cookie and fetches session data from Supabase.  
+
+Sessions and accounts are stored in Supabase tables: `accounts`, `sessions`, `users`.
+
+## 7. Architectural Decision Records
+
+We track major design choices in ADRs located under `docs/adr/`:
+
+| ADR  | Title                         | Status   | Date       |
+|------|-------------------------------|----------|------------|
+| 001  | Next.js & tRPC as core stack | Accepted | 2023-08-01 |
+| 002  | Use Supabase for persistence  | Accepted | 2023-08-05 |
+| 003  | NextAuth.js for auth          | Proposed | 2023-09-10 |
+
+Future ADRs should be added following the [ADR template](docs/adr/template.md).
