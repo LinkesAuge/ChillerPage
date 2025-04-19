@@ -1,10 +1,9 @@
 ---
-description: 
+description: Instructions to be always followed.
 globs: 
 alwaysApply: true
 ---
-description: Instructions to be always followed.
----
+
 These should be respected ALWAYS:
 1. Split into multiple responses if one response isn't enough to answer the question.
 2. IMPROVEMENTS and FURTHER PROGRESSIONS:

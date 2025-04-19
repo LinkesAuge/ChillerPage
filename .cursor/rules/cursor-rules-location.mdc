@@ -1,5 +1,5 @@
 ---
-description: 
+description: Cursor Rules Location
 globs: *.mdc
 alwaysApply: false
 ---

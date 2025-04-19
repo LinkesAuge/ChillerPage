@@ -1,5 +1,5 @@
 ---
-description: 
+description: Always include while DEBUGGING
 globs: 
 alwaysApply: true
 ---
